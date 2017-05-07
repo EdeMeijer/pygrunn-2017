@@ -1,0 +1,22 @@
+span.diagram {
+    display: block;
+    position: relative;
+    height: 330px;
+    margin: 50px 0;
+}
+
+#dn-diagram-in {
+    color: #E05E30;
+    float: left;
+    margin-left: 100px;
+}
+
+#dn-diagram-hidden {
+    color: #777;
+}
+
+#dn-diagram-out {
+    color: #444488;
+    float: right;
+    margin-right: 100px;
+}

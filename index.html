@@ -8,16 +8,31 @@
 
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/custom.css">
 
     <!-- Theme used for syntax highlighting of code -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
+    
+    <script src="js/jquery-3.2.1.js"></script>
 </head>
 <body>
 <div class="reveal">
     <div class="slides">
-        <section data-markdown="slides.md"
-                 data-separator-vertical="^\n\n\n"
-                 data-charset="UTF-8">
+        <section>
+            <h1>Deep learning with<br><img class="plain" src="img/logo.png"></h1>
+        </section>
+        <section>
+            <h2>What is deep learning?</h2>
+            <p>
+                Artificial neural networks with many layers
+            </p>
+            
+            <p id="deep-network-diagram-fragment" class="fragment">
+                <span class="diagram" id="deep-network-diagram"></span>
+                <span id="dn-diagram-in">Input layer</span>
+                <span id="dn-diagram-hidden">Hidden layers</span>
+                <span id="dn-diagram-out">Output layer</span>
+            </p>
         </section>
     </div>
 </div>
@@ -27,6 +42,8 @@
 
 <script>
     Reveal.initialize({
+        width: 1024,
+        height: 768,
         dependencies: [
             {src: 'plugin/markdown/marked.js'},
             {src: 'plugin/markdown/markdown.js'},
@@ -40,6 +57,14 @@
             }
         ]
     });
+
+    Reveal.addEventListener( 'fragmentshown', function( event ) {
+        if (event.fragment.id === 'deep-network-diagram-fragment') {
+            $(event.fragment).trigger('show');
+        }
+    } );
 </script>
+<script src="https://cdn.jsdelivr.net/mojs/0.265.6/mo.min.js"></script>
+<script src="js/anim.js"></script>
 </body>
 </html>
