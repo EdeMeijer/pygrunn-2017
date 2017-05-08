@@ -1,11 +1,8 @@
 'use strict';
 
 (function () {
-    const DIST_Y = 60;
-    const NODE_RADIUS = 15;
-    const SIGNAL_RADIUS = 7;
-    const MARGIN_Y = NODE_RADIUS;
-
+    bindLinearRegression('linear-regression-slide', 'linear-regression-diagram');
+    
     bindNeuralNet(
         'ann-slide',
         'ann-diagram',
@@ -26,14 +23,145 @@
         }
     );
     
+    function rnd(seed) {
+        let m_w = typeof seed === 'undefined' ? 123456789 : seed;
+        let m_z = 987654321;
+        const mask = 0xffffffff;
+        
+        return function () {
+            m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
+            m_w = (18000 * (m_w & 65535) + (m_w >> 16)) & mask;
+            let result = ((m_z << 16) + m_w) & mask;
+            result /= 4294967296;
+            return result + 0.5;
+        }
+    }
+
+    function randomNormal(rng) {
+        const u = 1 - rng();
+        const v = 1 - rng();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    function rad2deg (rad) {
+        return rad * 180 / Math.PI;
+    }
+
+    function lineOptions (x1, y1, x2, y2) {
+        const x = (x1 + x2) / 2;
+        const y = (y1 + y2) / 2;
+
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+        return {
+            left: 0,
+            top: 0,
+            x: x,
+            y: y,
+            shape: 'line',
+            radius: length / 2,
+            angle: rad2deg(angle)
+        };
+    }
+    
+    function bindLinearRegression(
+        fragmentOrSlideId,
+        elementId
+    ) {
+        const fragmentOrSlide = $('#' + fragmentOrSlideId);
+        const parent = document.getElementById(elementId);
+        
+        const MARGIN_X = 250;
+        const HEIGHT = 300;
+        const WIDTH = 500;
+        const SAMPLE_RADIUS = 7;
+        
+        const addGridLine = (x1, y1, x2, y2) => {
+            const opt = lineOptions(x1, y1, x2, y2);
+            opt.parent = parent;
+            opt.strokeWidth = 2.5;
+            opt.isShowStart = true;
+            opt.stroke = '#AAA';
+
+            return new mojs.Shape(opt);
+        };
+        
+        const predictLineOptions = (intercept, slope) => {
+            return lineOptions(MARGIN_X, HEIGHT - intercept, MARGIN_X + WIDTH, HEIGHT - (intercept + WIDTH * slope));
+        };
+        
+        const addPredictionLine = (intercepts, slopes) => {
+            const opt = predictLineOptions(intercepts[0], slopes[0]);
+            opt.parent = parent;
+            opt.strokeWidth = 5;
+            opt.isShowStart = true;
+            opt.stroke = '#444488';
+            opt.duration = 2500;
+
+            let shape = new mojs.Shape(opt);
+            
+            for (let i = 1; i < intercepts.length; i++) {
+                const opt2 = predictLineOptions(intercepts[i], slopes[i]);
+                opt2.duration = 5000;
+                shape = shape.then(opt2);
+            }
+            
+            return shape;
+        };
+        
+        const addSample = (x, y) => {
+            return new mojs.Shape({
+                parent: parent,
+                left: x,
+                top: y,
+                shape: 'circle',
+                isShowStart: true,
+                fill: '#E05E30',
+                radius: SAMPLE_RADIUS,
+            })
+        };
+        
+        addGridLine(MARGIN_X, 0, MARGIN_X, HEIGHT);
+        addGridLine(MARGIN_X, HEIGHT, MARGIN_X + WIDTH, HEIGHT);
+        
+        const random = rnd(12345);
+        
+        const intercept = 40;
+        const slope = 0.4;
+        
+        for (let x = 30; x < WIDTH - 15; x += random() * 30) {
+            const y = intercept + x * slope + randomNormal(random) * (5 + x * 0.1);
+            addSample(MARGIN_X + x, HEIGHT - y);
+        }
+
+        const predictLine = addPredictionLine(
+            [0, intercept],
+            [0.1, slope]
+        );
+
+        fragmentOrSlide.on('show', () => {
+            predictLine.play();
+        });
+
+        fragmentOrSlide.on('hide', () => {
+            predictLine.reset();
+        });
+    }
+    
     function bindNeuralNet(
         fragmentOrSlideId, 
         elementId, 
         layerSizes,
         options
     ) {
+        const DIST_Y = 60;
+        const NODE_RADIUS = 15;
+        const SIGNAL_RADIUS = 7;
+        const MARGIN_Y = NODE_RADIUS;
+        
         const fragmentOrSlide = $('#' + fragmentOrSlideId);
-        const a = document.getElementById(elementId);
+        const parent = document.getElementById(elementId);
         
         const marginX = options.marginX || 0;
         const distX = options.distX || 150;
@@ -44,16 +172,14 @@
         layers[layers.length - 1].color = '#444488';
         
         const maxNodes = layers.reduce((max, layer) => Math.max(max, layer.num), 0);
-
-        const rad2deg = rad => rad * 180 / Math.PI;
-
+        
         const nodeX = layer => marginX + layer * distX;
         const nodeY = (layer, node) => MARGIN_Y + DIST_Y * ((maxNodes - layers[layer].num) / 2 + node);
 
         const addNode = (layer, node) => {
             const color = layers[layer].color || '#777';
             return new mojs.Shape({
-                parent: a,
+                parent: parent,
                 left: nodeX(layer),
                 top: nodeY(layer, node),
                 shape: 'circle',
@@ -68,29 +194,14 @@
         };
 
         const addConnection = (layer1, node1, layer2, node2) => {
-            const x1 = nodeX(layer1);
-            const y1 = nodeY(layer1, node1);
-            const x2 = nodeX(layer2);
-            const y2 = nodeY(layer2, node2);
+            const opt = lineOptions(nodeX(layer1), nodeY(layer1, node1), nodeX(layer2), nodeY(layer2, node2));
+            opt.parent = parent;
+            opt.strokeWidth = 1.5;
+            opt.isShowStart = true;
+            opt.stroke = '#FFF';
+            opt.opacity = 0.2;
 
-            const x = (x1 + x2) / 2;
-            const y = (y1 + y2) / 2;
-
-            const angle = Math.atan2(y2 - y1, x2 - x1);
-            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
-            new mojs.Shape({
-                parent: a,
-                left: x,
-                top: y,
-                strokeWidth: 1.5,
-                shape: 'line',
-                isShowStart: true,
-                stroke: '#FFF',
-                opacity: 0.2,
-                radius: length / 2,
-                angle: rad2deg(angle)
-            });
+            new mojs.Shape(opt);
         };
 
         const addSignal = (layer1, node1, layer2, node2) => {
@@ -104,7 +215,7 @@
             const durationRatio = Math.pow(length / (x2 - x1), 0.35);
 
             return new mojs.Shape({
-                parent: a,
+                parent: parent,
                 left: x1,
                 top: y1,
                 x: {0: x2 - x1},
@@ -166,7 +277,7 @@
         }
 
         fragmentOrSlide.on('show', () => {
-            nextAnimTimeout = setTimeout(animateNextStep, 500);
+            nextAnimTimeout = setTimeout(animateNextStep, 1000);
         });
 
         fragmentOrSlide.on('hide', () => {
