@@ -5,18 +5,29 @@ span.diagram {
     margin: 50px 0;
 }
 
-#dn-diagram-in {
-    color: #E05E30;
+.dn-diagram-in {
     float: left;
-    margin-left: 100px;
+    margin-left: 50px !important;
 }
 
-#dn-diagram-hidden {
+.dn-diagram-hidden {
     color: #777;
 }
 
-#dn-diagram-out {
+.tensorflow, .dn-diagram-in {
+    color: #E05E30;
+}
+
+.dn-diagram-out {
     color: #444488;
     float: right;
-    margin-right: 100px;
+    margin-right: 50px !important;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
 }

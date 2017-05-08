@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>reveal.js</title>
+    <title>Deep learning with TensorFlow</title>
 
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/theme/black.css">
@@ -12,27 +12,93 @@
 
     <!-- Theme used for syntax highlighting of code -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
-    
+
     <script src="js/jquery-3.2.1.js"></script>
 </head>
 <body>
 <div class="reveal">
     <div class="slides">
         <section>
-            <h1>Deep learning with<br><img class="plain" src="img/logo.png"></h1>
+            <h1>
+                Deep learning with<br>
+                <img class="plain" src="img/logo.png">
+            </h1>
         </section>
         <section>
-            <h2>What is deep learning?</h2>
-            <p>
-                Artificial neural networks with many layers
-            </p>
-            
-            <p id="deep-network-diagram-fragment" class="fragment">
-                <span class="diagram" id="deep-network-diagram"></span>
-                <span id="dn-diagram-in">Input layer</span>
-                <span id="dn-diagram-hidden">Hidden layers</span>
-                <span id="dn-diagram-out">Output layer</span>
-            </p>
+            <section>
+                <h2>Machine learning</h2>
+                <p>
+                    Learning from data without being explicitly programmed
+                </p>
+                <div class="left">
+                   
+                    <ul>
+                        <li>Linear regression</li>
+                        <li>Logistic regression</li>
+                        <li>Decision trees</li>
+                        <li>Artificial neural networks</li>
+                        <li>And much more...</li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h2>Linear regression</h2>
+                <p>
+                    Predicting continuous values with linear weights
+                </p>
+                <aside class="notes">
+                    Can only learn linear models
+                </aside>
+                <p>TODO: add nice diagram</p>
+            </section>
+            <section>
+                <h2>Logistic regression</h2>
+                <p>
+                    Classification with linear weights
+                </p>
+                <p>TODO: add nice diagram</p>
+            </section>
+            <section>
+                <h2>Decision trees</h2>
+                <p>
+                    Predictions by splitting data in multiple steps
+                </p>
+                <p>TODO: add nice diagram</p>
+            </section>
+            <section id="ann-slide">
+                <h2>Artificial neural networks</h2>
+                <p>
+                    Multi layered networks that can learn <strong class="tensorflow">nonlinear</strong> functions
+                </p>
+                <p>
+                    <span class="diagram" id="ann-diagram"></span>
+                    <span class="dn-diagram-in">Input layer</span>
+                    <span class="dn-diagram-hidden">Hidden layer</span>
+                    <span class="dn-diagram-out">Output layer</span>
+                </p>
+            </section>
+        </section>
+        <section>
+            <h2>Deep learning</h2>
+            <section>
+                <p>
+                    Artificial neural networks with many layers
+                </p>
+                <p id="deep-network-diagram-fragment" class="fragment">
+                    <span class="diagram" id="deep-network-diagram"></span>
+                    <span class="dn-diagram-in">Input layer</span>
+                    <span class="dn-diagram-hidden">Hidden layers</span>
+                    <span class="dn-diagram-out">Output layer</span>
+                </p>
+            </section>
+            <section>
+                <p>
+                    Feature extraction at multiple levels of abstraction
+                </p>
+                <p>
+                    <img src="img/convolution.jpg">
+                </p>
+            </section>
         </section>
     </div>
 </div>
@@ -58,11 +124,18 @@
         ]
     });
 
-    Reveal.addEventListener( 'fragmentshown', function( event ) {
-        if (event.fragment.id === 'deep-network-diagram-fragment') {
-            $(event.fragment).trigger('show');
-        }
-    } );
+    Reveal.addEventListener('slidechanged', evt => {
+        $(evt.currentSlide).trigger('show');
+        $(evt.previousSlide).trigger('hide');
+    });
+
+    Reveal.addEventListener('fragmentshown', evt => {
+        $(evt.fragment).trigger('show');
+    });
+
+    Reveal.addEventListener('fragmenthidden', evt => {
+        $(evt.fragment).trigger('hide');
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/mojs/0.265.6/mo.min.js"></script>
 <script src="js/anim.js"></script>
