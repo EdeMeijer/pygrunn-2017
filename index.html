@@ -43,19 +43,26 @@
             <section id="linear-regression-slide">
                 <h2>Linear regression</h2>
                 <p>
-                    Predicting continuous values with linear weights
+                    Predicting continuous values with linear weights<br>
                 </p>
+                $$Y = a + bX$$
                 <aside class="notes">
                     Can only learn linear models
                 </aside>
-                <span class="diagram" id="linear-regression-diagram"></span>
+                <span class="diagram" id="linear-regression-diagram">
+                    <span class="lr-x">Hot</span>
+                    <span class="lr-y">Crazy</span>
+                </span>
             </section>
-            <section>
+            <section id="logistic-regression-slide">
                 <h2>Logistic regression</h2>
                 <p>
                     Classification with linear weights
                 </p>
-                <p>TODO: add nice diagram</p>
+                <span class="diagram" id="logistic-regression-diagram">
+                </span>
+                <span class="label"><span class="dot orange-dot"></span>Orange dot</span>
+                <span class="label"><span class="dot green-dot"></span>Green dot</span>
             </section>
             <section>
                 <h2>Decision trees</h2>
@@ -109,10 +116,15 @@
     Reveal.initialize({
         width: 1024,
         height: 768,
+        math: {
+            mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+            config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+        },
         dependencies: [
             {src: 'plugin/markdown/marked.js'},
             {src: 'plugin/markdown/markdown.js'},
             {src: 'plugin/notes/notes.js', async: true},
+            {src: 'plugin/math/math.js', async: true},
             {
                 src: 'plugin/highlight/highlight.js',
                 async: true,

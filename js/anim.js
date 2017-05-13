@@ -1,8 +1,18 @@
 'use strict';
 
 (function () {
-    bindLinearRegression('linear-regression-slide', 'linear-regression-diagram');
+    const SAMPLE_RADIUS = 7;
+    const MARGIN_X = 250;
+    const HEIGHT = 300;
+    const WIDTH = 500;
     
+    const COL_ORANGE = '#E05E30';
+    const COL_BLUE = '#444488';
+    const COL_GREEN = '#3c9f3d';
+
+    bindLinearRegression('linear-regression-slide', 'linear-regression-diagram');
+    bindLogisticRegression('logistic-regression-slide', 'logistic-regression-diagram');
+
     bindNeuralNet(
         'ann-slide',
         'ann-diagram',
@@ -14,7 +24,7 @@
     );
 
     bindNeuralNet(
-        'deep-network-diagram-fragment', 
+        'deep-network-diagram-fragment',
         'deep-network-diagram',
         [3, 6, 6, 5, 4, 2],
         {
@@ -22,12 +32,12 @@
             animDuration: 400
         }
     );
-    
+
     function rnd(seed) {
         let m_w = typeof seed === 'undefined' ? 123456789 : seed;
         let m_z = 987654321;
         const mask = 0xffffffff;
-        
+
         return function () {
             m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
             m_w = (18000 * (m_w & 65535) + (m_w >> 16)) & mask;
@@ -43,11 +53,11 @@
         return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     }
 
-    function rad2deg (rad) {
+    function rad2deg(rad) {
         return rad * 180 / Math.PI;
     }
 
-    function lineOptions (x1, y1, x2, y2) {
+    function lineOptions(x1, y1, x2, y2) {
         const x = (x1 + x2) / 2;
         const y = (y1 + y2) / 2;
 
@@ -64,78 +74,71 @@
             angle: rad2deg(angle)
         };
     }
-    
-    function bindLinearRegression(
-        fragmentOrSlideId,
-        elementId
-    ) {
+
+    function addGridLine(parent, x1, y1, x2, y2) {
+        const opt = lineOptions(x1, y1, x2, y2);
+        opt.parent = parent;
+        opt.strokeWidth = 2.5;
+        opt.isShowStart = true;
+        opt.stroke = '#AAA';
+
+        return new mojs.Shape(opt);
+    }
+
+    function addSample(parent, x, y, color) {
+        return new mojs.Shape({
+            parent: parent,
+            left: x,
+            top: y,
+            shape: 'circle',
+            isShowStart: true,
+            fill: color,
+            radius: SAMPLE_RADIUS,
+        })
+    }
+
+    function predictLineOptions(intercept, slope) {
+        return lineOptions(MARGIN_X, HEIGHT - intercept, MARGIN_X + WIDTH, HEIGHT - (intercept + WIDTH * slope));
+    }
+
+    function addPredictionLine(parent, intercepts, slopes) {
+        const opt = predictLineOptions(intercepts[0], slopes[0]);
+        opt.parent = parent;
+        opt.strokeWidth = 5;
+        opt.isShowStart = true;
+        opt.stroke = COL_BLUE;
+        opt.duration = 1500;
+
+        let shape = new mojs.Shape(opt);
+
+        for (let i = 1; i < intercepts.length; i++) {
+            const opt2 = predictLineOptions(intercepts[i], slopes[i]);
+            opt2.duration = 4000;
+            shape = shape.then(opt2);
+        }
+
+        return shape;
+    }
+
+    function bindLinearRegression(fragmentOrSlideId, elementId) {
         const fragmentOrSlide = $('#' + fragmentOrSlideId);
         const parent = document.getElementById(elementId);
-        
-        const MARGIN_X = 250;
-        const HEIGHT = 300;
-        const WIDTH = 500;
-        const SAMPLE_RADIUS = 7;
-        
-        const addGridLine = (x1, y1, x2, y2) => {
-            const opt = lineOptions(x1, y1, x2, y2);
-            opt.parent = parent;
-            opt.strokeWidth = 2.5;
-            opt.isShowStart = true;
-            opt.stroke = '#AAA';
 
-            return new mojs.Shape(opt);
-        };
-        
-        const predictLineOptions = (intercept, slope) => {
-            return lineOptions(MARGIN_X, HEIGHT - intercept, MARGIN_X + WIDTH, HEIGHT - (intercept + WIDTH * slope));
-        };
-        
-        const addPredictionLine = (intercepts, slopes) => {
-            const opt = predictLineOptions(intercepts[0], slopes[0]);
-            opt.parent = parent;
-            opt.strokeWidth = 5;
-            opt.isShowStart = true;
-            opt.stroke = '#444488';
-            opt.duration = 2500;
+        addGridLine(parent, MARGIN_X, 0, MARGIN_X, HEIGHT);
+        addGridLine(parent, MARGIN_X, HEIGHT, MARGIN_X + WIDTH, HEIGHT);
 
-            let shape = new mojs.Shape(opt);
-            
-            for (let i = 1; i < intercepts.length; i++) {
-                const opt2 = predictLineOptions(intercepts[i], slopes[i]);
-                opt2.duration = 5000;
-                shape = shape.then(opt2);
-            }
-            
-            return shape;
-        };
-        
-        const addSample = (x, y) => {
-            return new mojs.Shape({
-                parent: parent,
-                left: x,
-                top: y,
-                shape: 'circle',
-                isShowStart: true,
-                fill: '#E05E30',
-                radius: SAMPLE_RADIUS,
-            })
-        };
-        
-        addGridLine(MARGIN_X, 0, MARGIN_X, HEIGHT);
-        addGridLine(MARGIN_X, HEIGHT, MARGIN_X + WIDTH, HEIGHT);
-        
         const random = rnd(12345);
-        
+
         const intercept = 40;
         const slope = 0.4;
-        
+
         for (let x = 30; x < WIDTH - 15; x += random() * 30) {
             const y = intercept + x * slope + randomNormal(random) * (5 + x * 0.1);
-            addSample(MARGIN_X + x, HEIGHT - y);
+            addSample(parent, MARGIN_X + x, HEIGHT - y, COL_ORANGE);
         }
 
         const predictLine = addPredictionLine(
+            parent,
             [0, intercept],
             [0.1, slope]
         );
@@ -148,31 +151,62 @@
             predictLine.reset();
         });
     }
-    
-    function bindNeuralNet(
-        fragmentOrSlideId, 
-        elementId, 
-        layerSizes,
-        options
-    ) {
-        const DIST_Y = 60;
+
+    function bindLogisticRegression(fragmentOrSlideId, elementId) {
+        const fragmentOrSlide = $('#' + fragmentOrSlideId);
+        const parent = document.getElementById(elementId);
+
+        addGridLine(parent, MARGIN_X, 0, MARGIN_X, HEIGHT);
+        addGridLine(parent, MARGIN_X, HEIGHT, MARGIN_X + WIDTH, HEIGHT);
+
+        const random = rnd(12345);
+        const random2 = rnd(1234);
+
+        const intercept = 250;
+        const slope = -0.5;
+        
+        for (let i = 0; i < 40; i ++) {
+            const x = random() * WIDTH;
+            const y = random() * (HEIGHT - 10) + 10;
+            const boundary = intercept + x * slope + randomNormal(random2) * 30;
+            const color = y >= boundary ? COL_ORANGE : COL_GREEN;
+            addSample(parent, MARGIN_X + x, HEIGHT - y, color);
+        }
+
+        const predictLine = addPredictionLine(
+            parent,
+            [0, intercept],
+            [0.3, slope]
+        );
+
+        fragmentOrSlide.on('show', () => {
+            predictLine.play();
+        });
+
+        fragmentOrSlide.on('hide', () => {
+            predictLine.reset();
+        });
+    }
+
+    function bindNeuralNet(fragmentOrSlideId, elementId, layerSizes, options) {
+        const DIST_Y = 65;
         const NODE_RADIUS = 15;
         const SIGNAL_RADIUS = 7;
         const MARGIN_Y = NODE_RADIUS;
-        
+
         const fragmentOrSlide = $('#' + fragmentOrSlideId);
         const parent = document.getElementById(elementId);
-        
+
         const marginX = options.marginX || 0;
         const distX = options.distX || 150;
         const animDuration = options.animDuration || 700;
-        
+
         const layers = layerSizes.map(size => ({num: size}));
-        layers[0].color = '#E05E30';
-        layers[layers.length - 1].color = '#444488';
-        
+        layers[0].color = COL_ORANGE;
+        layers[layers.length - 1].color = COL_BLUE;
+
         const maxNodes = layers.reduce((max, layer) => Math.max(max, layer.num), 0);
-        
+
         const nodeX = layer => marginX + layer * distX;
         const nodeY = (layer, node) => MARGIN_Y + DIST_Y * ((maxNodes - layers[layer].num) / 2 + node);
 

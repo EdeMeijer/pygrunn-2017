@@ -1,7 +1,7 @@
 span.diagram {
     display: block;
     position: relative;
-    height: 330px;
+    height: 360px;
     margin: 50px 0;
     overflow: hidden;
 }
@@ -19,6 +19,14 @@ span.diagram {
     color: #E05E30;
 }
 
+.orange-dot {
+    background-color: #E05E30;
+}
+
+.green-dot {
+    background-color: #3c9f3d;
+}
+
 .dn-diagram-out {
     color: #444488;
     float: right;
@@ -31,4 +39,33 @@ span.diagram {
 
 .right {
     text-align: right;
+}
+
+span.lr-x {
+    bottom: -5px;
+    left: calc(50% - 30px);
+}
+
+span.lr-y {
+    left: 160px;
+    top: 130px;
+    transform: rotate(-90deg)
+}
+
+span.lr-x, span.lr-y {
+    position: absolute;
+    color: #8B8B8B;
+}
+
+span.label {
+    color: #8B8B8B;
+    margin: 0 20px;
+}
+
+span.dot {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 15px;
+    margin: 3px 15px;
 }
