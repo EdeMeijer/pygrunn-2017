@@ -161,13 +161,18 @@
                 </ul>
             </section>
         </section>
-        <section id="gd-slide" data-background-color="#1F1F28">
+        <section id="gd-slide">
             <h2>Training a model</h2>
             <h3>Minimizing error with gradient descent</h3>
             <p>
                 <small>Gradient descent follows the steepest decline along the error surface</small>
             </p>
-            <aside class="notes">A gradient is the slope of the error surface</aside>
+            <aside class="notes">
+                <ul>
+                    <li>A gradient is the slope of the error surface</li>
+                    <li>Step size is controlled by the learning rate</li>
+                </ul>
+            </aside>
             <p class="fragment" id="gd-fragment">
                 <span class="diagram" id="gd-diagram">
                     <span class="lr-x" style="left: 135px;">Intercept</span>
@@ -176,6 +181,173 @@
                     <span class="lr-y" style="left: 360px;">Crazy</span>
                 </span>
             </p>
+        </section>
+        <section data-background-color="#1D0A04">
+            <h2>What is TensorFlow?</h2>
+            <blockquote>"An open-source software library for Machine Intelligence"</blockquote>
+            <div class="fragment">
+                <p>Or Google's attempt to take over the world of A.I.</p>
+                <small>It seems to be working out</small>
+            </div>
+        </section>
+        <section>
+            <h2>Tensors</h2>
+            <h3>Arrays with any number of dimensions</h3>
+            <ul>
+                <li>A 0-D tensor is a single value</li>
+                <li>A 1-D tensor is an array</li>
+                <li>A 2-D tensor is an matrix</li>
+                <li>A 3-D tensor is like a cube of values</li>
+                <li>Etc...</li>
+            </ul>
+        </section>
+        <section>
+            <h2>Computation graphs</h2>
+            <p>
+                Every calculation (operation) in TensorFlow is a <strong>node</strong><br>
+            </p>
+            <p>
+                Nodes are connected by edges, here the tensors flows between operations.
+            </p>
+            <hr>
+            $$Y = a + bX$$
+            <hr>
+            <img class="plain" src="img/graph.png" style="width: 250px;">
+        </section>
+        <section>
+            <h2>Linear regression example</h2>
+            <section>
+                <p>
+                    <h3 style="position: absolute; left: 250px; top: 0">Code</h3>
+                    <h3 style="position: absolute; left: 760px; top: 0">Output</h3>
+                    <pre style="position: absolute; left: 0; top: 50px; width: 640px;"><code data-trim class="python">
+import tensorflow as tf
+
+# Define trainable variables
+intercept = tf.Variable(2.0)
+slope = tf.Variable(-1.0)
+
+# Data intercept = 1.0, slope = 0.5
+X = tf.constant([[0.0], [1.0], [2.0], [3.0]])
+Y = tf.constant([[1.0], [1.5], [2.0], [2.5]])
+
+# Calculate the prediction
+prediction = X * slope + intercept
+
+# Run the prediction and output the result
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
+print(sess.run(prediction))
+                    </code></pre>
+                <pre style="position: absolute; right: 0; top: 50px; width: 340px;"><code class="python">[[ 2.]
+ [ 1.]
+ [ 0.]
+ [-1.]]
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    </code></pre>
+                </p>
+            </section>
+            <section>
+                <p>
+                <h3 style="position: absolute; left: 250px; top: 0">Code</h3>
+                <h3 style="position: absolute; left: 760px; top: 0">Output</h3>
+                <pre style="position: absolute; left: 0; top: 50px; width: 640px;"><code data-trim data-noescape class="python">
+# Define trainable variables
+intercept = tf.Variable(2.0)
+slope = tf.Variable(-1.0)
+
+# Data intercept = 1.0, slope = 0.5
+X = tf.constant([[0.0], [1.0], [2.0], [3.0]])
+Y = tf.constant([[1.0], [1.5], [2.0], [2.5]])
+
+# Calculate the prediction and it's error
+prediction = X * slope + intercept
+<mark>squared_errors = tf.square(Y - prediction)
+mse = tf.reduce_mean(squared_errors)</mark>
+
+# Run the prediction and output the result
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
+<mark>print(sess.run(squared_errors))
+print(sess.run(mse))</mark>
+                    </code></pre>
+                <pre style="position: absolute; right: 0; top: 50px; width: 340px;"><code class="python">[[  1.  ]
+ [  0.25]
+ [  4.  ]
+ [ 12.25]]
+4.375
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    </code></pre>
+                </p>
+            </section>
+            <section>
+                <p>
+                <h3 style="position: absolute; left: 250px; top: 0">Code</h3>
+                <h3 style="position: absolute; left: 760px; top: 0">Output</h3>
+                <pre style="position: absolute; left: 0; top: 50px; width: 640px;"><code data-trim data-noescape class="python">
+# Calculate the prediction and it's error
+prediction = X * slope + intercept
+squared_errors = tf.square(Y - prediction)
+mse = tf.reduce_mean(squared_errors)
+
+# Define the gradient descent operation
+<mark>train_op = tf.train.GradientDescentOptimizer(
+    learning_rate=0.1).minimize(mse)</mark>
+
+# Run the prediction and output the result
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
+
+for i in range(100): # Optimize for 100 steps
+    _, a, b, err = sess.run([
+        <mark>train_op</mark>, intercept, slope, mse])
+    if i % 10 == 0:
+        print('{}  {:.2f}  {:.2f}  {:.2f}'
+            .format(i, a, b, err))
+                    </code></pre>
+                <pre style="position: absolute; right: 0; top: 50px; width: 340px;"><code class="python">0  2.00  -1.00  4.38
+10  1.76  0.15  0.21
+20  1.41  0.31  0.06
+30  1.22  0.40  0.02
+40  1.12  0.44  0.01
+50  1.07  0.47  0.00
+60  1.04  0.48  0.00
+70  1.02  0.49  0.00
+80  1.01  0.50  0.00
+90  1.01  0.50  0.00
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    </code></pre>
+                </p>
+            </section>
         </section>
     </div>
 </div>
