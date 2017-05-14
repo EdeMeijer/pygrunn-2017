@@ -15,8 +15,12 @@
     color: #777;
 }
 
-.tensorflow, .dn-diagram-in {
-    color: #E05E30;
+h2, .tensorflow, .dn-diagram-in {
+    color: #E05E30 !important;
+}
+
+ul {
+    margin-top: 20px !important;
 }
 
 .orange-dot {
@@ -31,6 +35,10 @@
     color: #444488;
     float: right;
     margin-right: 50px !important;
+}
+
+.blue {
+    color: #444488; 
 }
 
 .left {
