@@ -273,7 +273,7 @@
             opt.strokeWidth = 1.5;
             opt.isShowStart = true;
             opt.stroke = '#FFF';
-            opt.opacity = 0.2;
+            opt.opacity = 0.3;
 
             new mojs.Shape(opt);
         };
