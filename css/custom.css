@@ -169,3 +169,8 @@ div.good {
     color: #3c9f3d !important;
     border-color: #3c9f3d !important;
 }
+
+#error-plot {
+    position: absolute;
+    left: 60px;
+}

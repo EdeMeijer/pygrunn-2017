@@ -157,14 +157,31 @@
                         <aside class="notes">NLP: Translation, sentiment analysis</aside>
                     </li>
                     <li>Recommendation systems</li>
-                    <li>Text generation</li>
+                    <li><strong>Text generation</strong></li>
                 </ul>
             </section>
+        </section>
+        <section id="gd-slide" data-background-color="#1F1F28">
+            <h2>Training a model</h2>
+            <h3>Minimizing error with gradient descent</h3>
+            <p>
+                <small>Gradient descent follows the steepest decline along the error surface</small>
+            </p>
+            <aside class="notes">A gradient is the slope of the error surface</aside>
+            <p class="fragment" id="gd-fragment">
+                <span class="diagram" id="gd-diagram">
+                    <span class="lr-x" style="left: 135px;">Intercept</span>
+                    <span class="lr-y" style="left: -30px;">Slope</span>
+                    <span class="lr-x" style="left: 670px;">Hot</span>
+                    <span class="lr-y" style="left: 360px;">Crazy</span>
+                </span>
+            </p>
         </section>
     </div>
 </div>
 
 <script src="lib/js/head.min.js"></script>
+<script src="js/chroma.min.js"></script>
 <script src="js/reveal.js"></script>
 
 <script>
@@ -202,6 +219,11 @@
     Reveal.addEventListener('fragmenthidden', evt => {
         $(evt.fragment).trigger('hide');
     });
+
+    $(() => setTimeout(
+        () => $(Reveal.getCurrentSlide()).trigger('show'),
+        10
+    ));
 </script>
 <script src="https://cdn.jsdelivr.net/mojs/0.265.6/mo.min.js"></script>
 <script src="js/anim.js"></script>
