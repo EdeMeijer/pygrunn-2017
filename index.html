@@ -27,7 +27,7 @@
         <section>
             <section>
                 <h2>Machine learning</h2>
-                <p>
+                <p class="tensorflow">
                     Learning from data without being explicitly programmed
                 </p>
                 <div class="left">
@@ -59,17 +59,45 @@
                 <p>
                     Classification with linear weights
                 </p>
-                <span class="diagram" id="logistic-regression-diagram">
-                </span>
+                <span class="diagram" id="logistic-regression-diagram"></span>
                 <span class="label"><span class="dot orange-dot"></span>Orange dot</span>
                 <span class="label"><span class="dot green-dot"></span>Green dot</span>
             </section>
-            <section>
+            <section id="decision-trees-slide">
                 <h2>Decision trees</h2>
                 <p>
                     Predictions by splitting data in multiple steps
                 </p>
-                <p>TODO: add nice diagram</p>
+                <p>
+                    <small class="tensorflow">What do people think of the weather?</small>
+                </p>
+                <div style="height: 490px" class="diagram" id="decision-trees-diagram">
+                    <div id="dt-q1">
+                        Raining?
+                        <span class="yes">yes</span>
+                        <span class="no">no</span>
+                    </div>
+                    <div class="bad" id="dt-r1">Bad</div>
+                    <div id="dt-q2">
+                        Temp > -10&#8451;?
+                        <span class="yes">yes</span>
+                        <span class="no">no</span>
+                    </div>
+                    <div class="bad" id="dt-r2">Bad</div>
+                    <div id="dt-q3">
+                        Snowing?
+                        <span class="yes">yes</span>
+                        <span class="no">no</span>
+                    </div>
+                    <div class="good" id="dt-r3">Good</div>
+                    <div id="dt-q4">
+                        Temp > 15&#8451;?
+                        <span class="yes">yes</span>
+                        <span class="no">no</span>
+                    </div>
+                    <div class="bad" id="dt-r4">Bad</div>
+                    <div class="good" id="dt-r5">Good</div>
+                </div>
             </section>
             <section id="ann-slide">
                 <h2>Artificial neural networks</h2>
@@ -102,7 +130,12 @@
                     Feature extraction at multiple levels of abstraction
                 </p>
                 <p>
-                    <img src="img/convolution.jpg">
+                    <img src="img/deeplearning.png">
+                </p>
+            </section>
+            <section>
+                <p>
+                    Applications in image recognition, translation, text to speech, TODO
                 </p>
             </section>
         </section>
@@ -117,7 +150,7 @@
         width: 1024,
         height: 768,
         math: {
-            mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+            mathjax: 'js/MathJax.js',
             config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
         },
         dependencies: [

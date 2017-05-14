@@ -5,13 +5,16 @@
     const MARGIN_X = 250;
     const HEIGHT = 300;
     const WIDTH = 500;
-    
+
     const COL_ORANGE = '#E05E30';
     const COL_BLUE = '#444488';
     const COL_GREEN = '#3c9f3d';
 
     bindLinearRegression('linear-regression-slide', 'linear-regression-diagram');
+
     bindLogisticRegression('logistic-regression-slide', 'logistic-regression-diagram');
+
+    bindDecisionTrees('decision-trees-slide', 'decision-trees-diagram');
 
     bindNeuralNet(
         'ann-slide',
@@ -107,13 +110,13 @@
         opt.strokeWidth = 5;
         opt.isShowStart = true;
         opt.stroke = COL_BLUE;
-        opt.duration = 1500;
+        opt.duration = 1000;
 
         let shape = new mojs.Shape(opt);
 
         for (let i = 1; i < intercepts.length; i++) {
             const opt2 = predictLineOptions(intercepts[i], slopes[i]);
-            opt2.duration = 4000;
+            opt2.duration = 2000;
             shape = shape.then(opt2);
         }
 
@@ -121,7 +124,7 @@
     }
 
     function bindLinearRegression(fragmentOrSlideId, elementId) {
-        const fragmentOrSlide = $('#' + fragmentOrSlideId);
+        const $fragmentOrSlide = $('#' + fragmentOrSlideId);
         const parent = document.getElementById(elementId);
 
         addGridLine(parent, MARGIN_X, 0, MARGIN_X, HEIGHT);
@@ -143,17 +146,17 @@
             [0.1, slope]
         );
 
-        fragmentOrSlide.on('show', () => {
+        $fragmentOrSlide.on('show', () => {
             predictLine.play();
         });
 
-        fragmentOrSlide.on('hide', () => {
+        $fragmentOrSlide.on('hide', () => {
             predictLine.reset();
         });
     }
 
     function bindLogisticRegression(fragmentOrSlideId, elementId) {
-        const fragmentOrSlide = $('#' + fragmentOrSlideId);
+        const $fragmentOrSlide = $('#' + fragmentOrSlideId);
         const parent = document.getElementById(elementId);
 
         addGridLine(parent, MARGIN_X, 0, MARGIN_X, HEIGHT);
@@ -164,8 +167,8 @@
 
         const intercept = 250;
         const slope = -0.5;
-        
-        for (let i = 0; i < 40; i ++) {
+
+        for (let i = 0; i < 40; i++) {
             const x = random() * WIDTH;
             const y = random() * (HEIGHT - 10) + 10;
             const boundary = intercept + x * slope + randomNormal(random2) * 30;
@@ -179,12 +182,49 @@
             [0.3, slope]
         );
 
-        fragmentOrSlide.on('show', () => {
+        $fragmentOrSlide.on('show', () => {
             predictLine.play();
         });
 
-        fragmentOrSlide.on('hide', () => {
+        $fragmentOrSlide.on('hide', () => {
             predictLine.reset();
+        });
+    }
+
+    function bindDecisionTrees(fragmentOrSlideId, elementId) {
+        const $fragmentOrSlide = $('#' + fragmentOrSlideId);
+        const $parent = $('#' + elementId);
+
+        $parent.find('div').hide();
+
+        $fragmentOrSlide.on('show', () => {
+            setTimeout(() => {
+                $('#dt-q1').fadeIn();
+                
+                setTimeout(() => {
+                    $('#dt-r1').fadeIn();
+                    $('#dt-q2').fadeIn();
+
+                    setTimeout(() => {
+                        $('#dt-r2').fadeIn();
+                        $('#dt-q3').fadeIn();
+
+                        setTimeout(() => {
+                            $('#dt-r3').fadeIn();
+                            $('#dt-q4').fadeIn();
+
+                            setTimeout(() => {
+                                $('#dt-r4').fadeIn();
+                                $('#dt-r5').fadeIn();
+                            }, 200)
+                        }, 200)
+                    }, 200)
+                }, 200)
+            }, 500)
+        });
+
+        $fragmentOrSlide.on('hide', () => {
+            setTimeout(() => $parent.find('div').hide(), 500);
         });
     }
 
@@ -194,7 +234,7 @@
         const SIGNAL_RADIUS = 7;
         const MARGIN_Y = NODE_RADIUS;
 
-        const fragmentOrSlide = $('#' + fragmentOrSlideId);
+        const $fragmentOrSlide = $('#' + fragmentOrSlideId);
         const parent = document.getElementById(elementId);
 
         const marginX = options.marginX || 0;
@@ -310,11 +350,11 @@
             nextAnimTimeout = setTimeout(animateNextStep, animDuration * 0.95 + (animStep === 0 ? 1000 : 0));
         }
 
-        fragmentOrSlide.on('show', () => {
+        $fragmentOrSlide.on('show', () => {
             nextAnimTimeout = setTimeout(animateNextStep, 1000);
         });
 
-        fragmentOrSlide.on('hide', () => {
+        $fragmentOrSlide.on('hide', () => {
             animStep = 0;
             if (nextAnimTimeout !== null) {
                 clearTimeout(nextAnimTimeout);
