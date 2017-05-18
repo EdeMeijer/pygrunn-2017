@@ -174,3 +174,11 @@ div.good {
     position: absolute;
     left: 60px;
 }
+
+table.data-ex td {
+    text-align: center;
+}
+table.data-ex tr.real td {
+    border-color: #555555;
+    color: #555555;
+}

@@ -161,6 +161,7 @@ body {
   display: block;
   padding: 5px;
   overflow: auto;
+  overflow-x: hidden;
   word-wrap: normal; }
 
 .reveal table {
