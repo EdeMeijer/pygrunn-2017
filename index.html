@@ -371,20 +371,29 @@ for i in range(100): # Optimize for 100 steps
             <section style="right: 0; width: 800px;">
                 <p><strong>LSTM</strong> (Long Short-Term Memory) cells can remember state over many time steps</p>
                 <img class="plain" src="img/lstm.png" style="width:600px;">
+                <p>
+                    In our case, it will learn to remember the context of the current word and sentence
+                </p>
             </section>
             <section style="right: 0; width: 800px;">
                 <p><strong>ReLU</strong> (Rectified Linear Unit) adds more <strong>nonlinearity</strong></p>
                 <img class="plain" src="img/relu.png" style="width:300px;">
+                <p>
+                    It will give the network greater modelling power, improving prediction quality
+                </p>
             </section>
             <section style="right: 0; width: 800px;">
                 <p><strong>Softmax</strong> squashes the probabilities of all outputs to a sum of 1.0</p>
                 <img class="plain" src="img/softmax.png" style="width:600px;">
+                <p>
+                    This allows us to sample characters from a probability distribution when generating tweets
+                </p>
             </section>
         </section>
         <section>
             <h2>Data format</h2>
-            <p><strong>Features</strong> (input data)</p>
             <table class="data-ex">
+                <tr><td colspan="13"><strong>Features</strong> (input data)</tr>
                 <tr class="real">
                     <td>⇒</td>
                     <td>#</td>
@@ -397,8 +406,10 @@ for i in range(100): # Optimize for 100 steps
                     <td>0</td>
                     <td>1</td>
                     <td>6</td>
+                    <td></td>
+                    <td></td>
                 </tr>
-                <tr>
+                <tr class="tensorflow">
                     <td>81</td>
                     <td>4</td>
                     <td>46</td>
@@ -410,10 +421,10 @@ for i in range(100): # Optimize for 100 steps
                     <td>14</td>
                     <td>15</td>
                     <td>20</td>
+                    <td></td>
+                    <td></td>
                 </tr>
-            </table>
-            <p><strong>Labels</strong> (output data)</p>
-            <table class="data-ex">
+                <tr><td colspan="13"><strong>Labels</strong> (output data)</td></tr>
                 <tr class="real">
                     <td>#</td>
                     <td>T</td>
@@ -426,8 +437,10 @@ for i in range(100): # Optimize for 100 steps
                     <td>1</td>
                     <td>6</td>
                     <td>⛔</td>
+                    <td></td>
+                    <td></td>
                 </tr>
-                <tr>
+                <tr class="green">
                     <td>4</td>
                     <td>46</td>
                     <td>71</td>
@@ -439,6 +452,24 @@ for i in range(100): # Optimize for 100 steps
                     <td>15</td>
                     <td>20</td>
                     <td>81</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr><td colspan="13"><strong>Mask</strong></td></tr>
+                <tr class="blue">
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>0</td>
                 </tr>
             </table>
         </section>
@@ -683,16 +714,14 @@ $ python3 train.py
 Sampling tweet....
 
 ---------------------------------------
-W6upDK7rEFkkMu?Xno5wT)Wr'XIG'zWNb$E6njei0
+<strong>W6upDK7rEFkkMu?Xno5wT)Wr'XIG'zWNb$E6njei0</strong>
 ---------------------------------------
 
 EPOCH 0: train = 2.1826, test = 1.8535, L2 = 0.065104
 Sampling tweet....
 
 ---------------------------------------
-Tomup's shem beade s Pand Preckile Ammanar Ifain in the Obamay. The soorso I-Grat Liad is
-ack is an groming chat go with Amp remelas wor poom bf the proutthoul Mrane. I- O FRTET 
-GE that I dond boing!
+<strong>Tomup's shem beade s Pand Preckile Ammanar Ifain in the Obamay. The soorso I-Grat Liad is ack is an groming chat go with Amp remelas wor poom bf the proutthoul Mrane. I- O FRTET GE that I dond boing!</strong>
 ---------------------------------------
 
 Model saved in file: /home/ede/repos/trumpet/cache/model/model.ckpt-0
@@ -700,7 +729,7 @@ EPOCH 1: train = 1.6961, test = 1.6108, L2 = 0.082404
 Sampling tweet....
 
 ---------------------------------------
-The wascon to the workn of the   Whind fould monned - lost just that mysices for com.).
+<strong>The wascon to the workn of the   Whind fould monned - lost just that mysices for com.).</strong>
 ---------------------------------------
 
 Model saved in file: /home/ede/repos/trumpet/cache/model/model.ckpt-1
@@ -708,10 +737,36 @@ EPOCH 2: train = 1.5106, test = 1.4638, L2 = 0.093441
 Sampling tweet....
 
 ---------------------------------------
-Wasting a dick and of the BOfler Bartor conting support of toums. Fom Hampshers. Koppord 
-w/Ther thann. I will See Happer. Big is smailes are, problems. America, the pasiques 
-coulst in I wanded and par
+<strong>Wasting a dick and of the BOfler Bartor conting support of toums. Fom Hampshers. Koppord w/Ther thann. I will See Happer. Big is smailes are, problems. America, the pasiques coulst in I wanded and par</strong>
 ---------------------------------------
+            </pre>
+        </section>
+        <section>
+            <h2>After more epochs it gets better :)</h2>
+            <pre class="console">
+EPOCH 81: train = 0.80645, test = 1.2222, L2 = 0.2602
+Sampling tweet....
+
+---------------------------------------
+<strong>"@Patrick I through my news a better action they'vo know how to play the shirt too let the players and killing thousands of job!"</strong>
+---------------------------------------
+
+Model saved in file: /home/ede/repos/trumpet/cache/model/model.ckpt-81
+EPOCH 82: train = 0.80586, test = 1.227, L2 = 0.26108
+Sampling tweet....
+
+---------------------------------------
+<strong>"@erinbrinz: @foxandfriends: Amnesty Can Meason Exastele 'Globe thought's one on iP. You have easy still even planned in order."</strong>
+---------------------------------------
+
+Model saved in file: /home/ede/repos/trumpet/cache/model/model.ckpt-82
+EPOCH 83: train = 0.80409, test = 1.2229, L2 = 0.2618
+Sampling tweet....
+
+---------------------------------------
+<strong>@toomlyinl @bringinsfording @bottomert @BarackObama keep Democrab, the government @BarackObama send three honest http://t.co/HyYNOxFS50"</strong>
+---------------------------------------
+
             </pre>
         </section>
     </div>

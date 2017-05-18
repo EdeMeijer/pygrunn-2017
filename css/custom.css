@@ -41,6 +41,10 @@ ul {
     color: #444488;
 }
 
+.green {
+    color: #3c9f3d;
+}
+
 .left {
     text-align: left;
 }
@@ -176,10 +180,12 @@ div.good {
 
 table.data-ex td {
     text-align: center;
+    border: none;
+    font-size: 0.9em;
 }
 
 table.data-ex tr.real td {
-    border-color: #555555;
+    border-bottom: 1px solid #555555;
     color: #555555;
 }
 
